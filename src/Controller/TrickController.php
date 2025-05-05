@@ -2,17 +2,39 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Trick;
+use DateTimeImmutable;
+use App\Form\TrickType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[Route('/admin/trick')]
 final class TrickController extends AbstractController
 {
-    #[Route('/trick', name: 'app_trick')]
-    public function index(): Response
+    // trick creation
+    #[Route('/new', name: 'app_admin_trick_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $manager): Response
     {
-        return $this->render('trick/index.html.twig', [
-            'controller_name' => 'TrickController',
+        $trick = new Trick();
+        $form = $this->createForm(TrickType::class, $trick);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $trick->setCreatedAt(new DateTimeImmutable());
+            $trick->setEditedAt(new DateTimeImmutable());
+            $trick->setImagePath('image1');
+
+            $manager->persist($trick);
+            $manager->flush();
+
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('admin/trick/new.html.twig', [
+            'form' => $form,
         ]);
     }
 }
