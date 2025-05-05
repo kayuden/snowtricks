@@ -38,6 +38,9 @@ final class TrickController extends AbstractController
         ]);
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> feature/trick-edit
 
     // trick modification
     #[Route('/edit/{id}', name: 'app_admin_trick_edit', methods: ['GET', 'POST'])]
@@ -60,6 +63,7 @@ final class TrickController extends AbstractController
             'trick' => $trick,
         ]);
     }
+<<<<<<< HEAD
 
     //trick deletion
     #[Route('/delete/{id}', name: 'app_admin_trick_delete', methods: ['POST'])]
@@ -75,4 +79,6 @@ final class TrickController extends AbstractController
     }
 =======
 >>>>>>> feature/trick-create
+=======
+>>>>>>> feature/trick-edit
 }
