@@ -36,12 +36,15 @@
                                     {{ trick.name }}
                                 </a>
                                 <div class="d-flex gap-2">
-                                    <a href="#">
+                                    <a href="{{ path('app_admin_trick_edit', { id: trick.id }) }}">
                                         <img src="{{ asset('img/pencil-solid.svg') }}" alt="Edit" width="18">
                                     </a>
-                                    <a href="#" onclick="return confirm('Supprimer ce trick ?');">
-                                        <img src="{{ asset('img/trash-solid.svg') }}" alt="Delete" width="18">
-                                    </a>
+                                    <form method="post" action="{{ path('app_admin_trick_delete', { id: trick.id }) }}" onsubmit="return confirm('Supprimer ce trick ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                        <button class="btn p-0 border-0 bg-transparent" type="submit">
+                                            <img src="{{ asset('img/trash-solid.svg') }}" alt="Delete" width="18">
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
