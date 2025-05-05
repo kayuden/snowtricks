@@ -37,4 +37,26 @@ final class TrickController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    // trick modification
+    #[Route('/edit/{id}', name: 'app_admin_trick_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Trick $trick, EntityManagerInterface $manager): Response
+    {
+        $form = $this->createForm(TrickType::class, $trick);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $trick->setEditedAt(new \DateTimeImmutable());
+
+            $manager->flush();
+
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('admin/trick/edit.html.twig', [
+            'form' => $form,
+            'trick' => $trick,
+        ]);
+    }
 }
