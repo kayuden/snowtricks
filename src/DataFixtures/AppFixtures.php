@@ -10,6 +10,6 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void //symfony console doctrine:fixtures:load
     {
-        TrickFactory::createMany(10);
+        TrickFactory::createMany(30);
     }
 }

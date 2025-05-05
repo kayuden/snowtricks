@@ -10,6 +10,8 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class TrickFactory extends PersistentProxyObjectFactory
 {
+    //private static int $counter = 1;
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      *
@@ -33,6 +35,7 @@ final class TrickFactory extends PersistentProxyObjectFactory
     {
         return [
             'name' => self::faker()->word(),
+            //'name' => self::$counter++,
             'type' => self::faker()->randomElement(['Flip', 'Grab', 'Rotation', 'Slide']),
             'description' => self::faker()->sentence(150),
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
