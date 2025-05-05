@@ -37,6 +37,7 @@ final class TrickController extends AbstractController
             'form' => $form,
         ]);
     }
+<<<<<<< HEAD
 
     // trick modification
     #[Route('/edit/{id}', name: 'app_admin_trick_edit', methods: ['GET', 'POST'])]
@@ -72,4 +73,6 @@ final class TrickController extends AbstractController
 
         return $this->redirectToRoute('app_home');
     }
+=======
+>>>>>>> feature/trick-create
 }
