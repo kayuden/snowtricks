@@ -22,6 +22,13 @@
         </div>
     </header>
 
+    <!-- New trick -->
+    <div class="container px-4 px-lg-5 my-3">
+        <a href="{{ path('app_admin_trick_new') }}#trick-list" class="btn btn-secondary text-uppercase">
+            New trick
+        </a>
+    </div>
+
     <!-- Main Content-->
     <div id="tricks-block" class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -31,14 +38,14 @@
                         <div class="card h-100">
                             <img src="{{ asset('img/snowboard-bg.jpg') }}" class="card-img-top" alt="Trick image">
                             <div class="card-body d-flex justify-content-between align-items-center">
-                                <a href="{{ path('app_admin_trick_show', {id: trick.id}) }}" class="fw-bold">
+                                <a href="{{ path('app_admin_trick_show', {'id': trick.id}) }}" class="fw-bold">
                                     {{ trick.name }}
                                 </a>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ path('app_admin_trick_edit', { id: trick.id }) }}">
+                                    <a href="{{ path('app_admin_trick_edit', { 'id': trick.id }) }}">
                                         <img src="{{ asset('img/pencil-solid.svg') }}" alt="Edit" width="18">
                                     </a>
-                                    <form method="post" action="{{ path('app_admin_trick_delete', { id: trick.id }) }}" onsubmit="return confirm('Supprimer ce trick ?');">
+                                    <form method="post" action="{{ path('app_admin_trick_delete', { 'id': trick.id }) }}" onsubmit="return confirm('Supprimer ce trick ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
                                         <button class="btn p-0 border-0 bg-transparent" type="submit">
                                             <img src="{{ asset('img/trash-solid.svg') }}" alt="Delete" width="18">

@@ -14,15 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/admin/trick')]
 final class TrickController extends AbstractController
 {
-    //trick detail
-    #[Route('/{id}', name: 'app_admin_trick_show', methods: ['GET'])]
-    public function show(?Trick $trick): Response
-    {
-        return $this->render('admin/trick/show.html.twig', [
-            'trick' => $trick,
-        ]);
-    }
-
     // trick creation
     #[Route('/new', name: 'app_admin_trick_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $manager): Response
@@ -80,5 +71,14 @@ final class TrickController extends AbstractController
         }
 
         return $this->redirectToRoute('app_homepage');
+    }
+
+    //trick detail
+    #[Route('/{id}', name: 'app_admin_trick_show', methods: ['GET'])]
+    public function show(?Trick $trick): Response
+    {
+        return $this->render('admin/trick/show.html.twig', [
+            'trick' => $trick,
+        ]);
     }
 }

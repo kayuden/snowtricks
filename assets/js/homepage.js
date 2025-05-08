@@ -1,10 +1,8 @@
 document.addEventListener('turbo:load', function () {
-    console.log("Page chargée");
 
     // Scroll to top arrow
     const scrollToTopButton = document.getElementById('scrollToTop');
     window.addEventListener('scroll', function () {
-        console.log("Événement 'scroll' déclenché");
         if (window.scrollY > 100) {
             scrollToTopButton.style.display = 'block';
         } else {
@@ -12,21 +10,16 @@ document.addEventListener('turbo:load', function () {
         }
     });
 
-    // Load more
+    // Load more button
     const loadMoreBtn = document.getElementById('load-more-btn');
     const trickList = document.getElementById('trick-list');
 
     if (loadMoreBtn) {
         loadMoreBtn.addEventListener('click', function () {
-            console.log("Événement 'click' attaché au bouton Load more");
-
             const offset = parseInt(loadMoreBtn.getAttribute('data-offset'));
 
             loadMoreBtn.disabled = true;
             loadMoreBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...`;
-
-            console.log('Click sur Load more détecté');
-            console.log('Offset actuel :', offset);
 
             const url = loadMoreBtn.dataset.url;
             fetch(`${url}?offset=${offset}`)
@@ -44,7 +37,7 @@ document.addEventListener('turbo:load', function () {
                     }
                 })
                 .catch(error => {
-                    console.error('Erreur de chargement:', error);
+                    console.error('Loading error:', error);
                     loadMoreBtn.disabled = false;
                     loadMoreBtn.innerText = "Load more";
                 });
