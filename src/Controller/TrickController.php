@@ -39,7 +39,7 @@ final class TrickController extends AbstractController
             $manager->persist($trick);
             $manager->flush();
 
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_homepage');
         }
 
         return $this->render('admin/trick/new.html.twig', [
@@ -60,7 +60,7 @@ final class TrickController extends AbstractController
 
             $manager->flush();
 
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_homepage');
         }
 
         return $this->render('admin/trick/edit.html.twig', [
@@ -79,6 +79,6 @@ final class TrickController extends AbstractController
             $this->addFlash('success', 'Le trick a bien été supprimé.');
         }
 
-        return $this->redirectToRoute('app_home');
+        return $this->redirectToRoute('app_homepage');
     }
 }

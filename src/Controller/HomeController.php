@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class HomeController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
+    #[Route('/', name: 'app_homepage')]
     public function index(TrickRepository $repository): Response
     {
         $tricks = $repository->findBy([], ['createdAt' => 'DESC'], 15);
