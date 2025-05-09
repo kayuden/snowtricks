@@ -23,41 +23,47 @@ final class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, $trick);
 
         $form->handleRequest($request);
+
+        //verification
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setCreatedAt(new DateTimeImmutable());
             $trick->setEditedAt(new DateTimeImmutable());
 
-        /** @var UploadedFile[] $imageFiles */
-        $imageFiles = $form->get('imagePaths')->getData();
+            //image management
+            /** @var UploadedFile[] $imageFiles */
+            $imageFiles = $form->get('imagePaths')->getData();
 
-        $imagePaths = [];
+            $imagePaths = [];
 
-        if ($imageFiles) {
-            $trickName = $trick->getName();
-            $sluggedName = $slugger->slug($trickName)->lower();
-            $timestamp = (new \DateTime())->format('Ymd_His');
+            //if files uploaded
+            if ($imageFiles) {
+                //slugify
+                $trickName = $trick->getName(); //use trick name to format
+                $sluggedName = $slugger->slug($trickName)->lower(); 
+                $timestamp = (new \DateTime())->format('Ymd_His'); //timestamp
 
-            $index = 1;
+                $index = 1;
+                
+                foreach ($imageFiles as $imageFile) {
+                    $extension = $imageFile->guessExtension();
+                    $newFilename = $sluggedName . '_' . $index . '_' . $timestamp . '.' . $extension; //name file
 
-            foreach ($imageFiles as $imageFile) {
-                $extension = $imageFile->guessExtension();
-                $newFilename = $sluggedName . '_' . $index . '_' . $timestamp . '.' . $extension;
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
-                    );
-                    $imagePaths[] = $newFilename;
-                    $index++;
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'L\'upload d\'une image a échoué.');
+                    try {
+                        //save in directory ex. /uploads/images/trickname_1_20250509_151654
+                        $imageFile->move(
+                            $this->getParameter('images_directory'),
+                            $newFilename
+                        );
+                        $imagePaths[] = $newFilename;
+                        $index++;
+                    } catch (\Exception $e) { //error
+                        $this->addFlash('error', 'L\'upload d\'une image a échoué.');
+                    }
                 }
+
+                //saves paths in Trick entity
+                $trick->setImagePaths($imagePaths);
             }
-
-            $trick->setImagePaths($imagePaths);
-        }
-
 
             $manager->persist($trick);
             $manager->flush();
