@@ -29,8 +29,8 @@ class Trick
     #[ORM\Column]
     private ?\DateTimeImmutable $editedAt = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $imagePath = null;
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $imagePaths = [];
 
     public function getId(): ?int
     {
@@ -97,14 +97,14 @@ class Trick
         return $this;
     }
 
-    public function getImagePath(): ?string
+    public function getimagePaths(): ?array
     {
-        return $this->imagePath;
+        return $this->imagePaths;
     }
 
-    public function setImagePath(string $imagePath): static
+    public function setimagePaths(?array $imagePaths): self
     {
-        $this->imagePath = $imagePath;
+        $this->imagePaths = $imagePaths;
 
         return $this;
     }

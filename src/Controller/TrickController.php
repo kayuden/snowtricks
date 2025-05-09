@@ -27,37 +27,37 @@ final class TrickController extends AbstractController
             $trick->setCreatedAt(new DateTimeImmutable());
             $trick->setEditedAt(new DateTimeImmutable());
 
-            /** @var UploadedFile $imageFile */
-            $imageFile = $form->get('imagePath')->getData();
+        /** @var UploadedFile[] $imageFiles */
+        $imageFiles = $form->get('imagePaths')->getData();
 
-            if ($imageFile) {
-                // slugify
-                $trickName = $trick->getName(); // empty ?
-                $sluggedName = $slugger->slug($trickName)->lower(); // apply trick name to rename
+        $imagePaths = [];
 
-                // timestamp
-                $timestamp = (new \DateTime())->format('Ymd_His');
+        if ($imageFiles) {
+            $trickName = $trick->getName();
+            $sluggedName = $slugger->slug($trickName)->lower();
+            $timestamp = (new \DateTime())->format('Ymd_His');
 
-                // incrementation
-                $existingImages = glob($this->getParameter('images_directory') . '/' . $sluggedName . '_*');
-                $index = count($existingImages) + 1; // start to 1
+            $index = 1;
 
-                // rename
+            foreach ($imageFiles as $imageFile) {
                 $extension = $imageFile->guessExtension();
                 $newFilename = $sluggedName . '_' . $index . '_' . $timestamp . '.' . $extension;
 
-                // move file
                 try {
                     $imageFile->move(
                         $this->getParameter('images_directory'),
                         $newFilename
                     );
-                    $trick->setImagePath($newFilename);
+                    $imagePaths[] = $newFilename;
+                    $index++;
                 } catch (\Exception $e) {
-                    $this->addFlash('error', 'L\'upload de l\'image a échoué.');
-                    return $this->redirectToRoute('app_admin_trick_new');
+                    $this->addFlash('error', 'L\'upload d\'une image a échoué.');
                 }
             }
+
+            $trick->setImagePaths($imagePaths);
+        }
+
 
             $manager->persist($trick);
             $manager->flush();

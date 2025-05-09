@@ -17,9 +17,10 @@ class TrickType extends AbstractType
             ->add('name', TextType::class)
             ->add('description', TextType::class)
             ->add('type', TextType::class)
-            ->add('imagePath', FileType::class, [
+            ->add('imagePaths', FileType::class, [
                 'label' => 'Image (JPEG, PNG, GIF)',
-                'mapped' => false,  // Le champ n'est pas mappé directement à l'entité, il sera géré séparément
+                'mapped' => false, // not mapped directly to Trick entity
+                'multiple' => true, //multiple upload
                 'required' => false,
             ])
         ;

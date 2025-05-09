@@ -25,8 +25,11 @@
 
     <div class="container flex px-4 px-lg-5">
 
-        <img src="{{ asset('uploads/images/' ~ trick.imagePath) }}" alt="{{ trick.name }}">
-        
+        {% for image in trick.imagePaths %}
+            <img src="{{ asset('uploads/images/' ~ image) }}" alt="{{ trick.name }}" style="max-width: 200px;">
+        {% endfor %}
+
+                
         <p>{{ trick.description }}</p>
         
         <div>
