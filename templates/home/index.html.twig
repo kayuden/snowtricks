@@ -61,11 +61,13 @@
             </div>
 
             <!-- Load More Button -->
+            {% if tricks|length >= 15 %}
             <div class="d-flex justify-content-center mb-4">
                 <button id="load-more-btn" class="btn btn-primary" data-offset="15" data-url="{{ path('load_tricks') }}" type="button">
                     Load more
                 </button>
             </div>
+            {% endif %}
         </div>
     </div>
 
