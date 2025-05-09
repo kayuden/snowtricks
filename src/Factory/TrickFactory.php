@@ -40,7 +40,7 @@ final class TrickFactory extends PersistentProxyObjectFactory
             'description' => self::faker()->sentence(150),
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'editedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'imagePaths' => self::faker()->text(255),
+            'imagePaths' => ['monimage_1_20250509_151654.jpg'],
         ];
     }
 
