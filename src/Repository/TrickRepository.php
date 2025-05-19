@@ -16,6 +16,10 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
+    //private function delete.. {
+        //supression entité + bdd + dossier + affichage + message "OK"
+    //}
+
     //    /**
     //     * @return Trick[] Returns an array of Trick objects
     //     */
