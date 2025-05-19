@@ -115,3 +115,8 @@ hr {
     object-fit: cover;
     width: 100%;
 }
+
+/* space between header and container show.index.html */
+header.masthead{
+    margin-bottom: 1rem;
+}
