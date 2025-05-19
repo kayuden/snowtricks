@@ -41,6 +41,7 @@ final class TrickFactory extends PersistentProxyObjectFactory
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'editedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'imagePaths' => ['monimage_1_20250509_151654.jpg'],
+            'mainImage' => 'monimage_1_20250509_151654.jpg',
         ];
     }
 

@@ -57,6 +57,11 @@ final class TrickController extends AbstractController
                             $newFilename
                         );
                         $imagePaths[] = $newFilename;
+
+                        if ($index === 1) {
+                            $trick->setMainImage($newFilename);
+                        }
+
                         $index++;
                     } catch (\Exception $e) { //error
                         $this->addFlash('error', 'Image upload failed.');

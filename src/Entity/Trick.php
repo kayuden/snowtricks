@@ -32,6 +32,9 @@ class Trick
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $imagePaths = [];
 
+    #[ORM\Column(length: 255)]
+    private ?string $mainImage = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class Trick
     public function setimagePaths(?array $imagePaths): self
     {
         $this->imagePaths = $imagePaths;
+
+        return $this;
+    }
+
+    public function getMainImage(): ?string
+    {
+        return $this->mainImage;
+    }
+
+    public function setMainImage(string $mainImage): static
+    {
+        $this->mainImage = $mainImage;
 
         return $this;
     }
