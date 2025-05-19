@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 #[Route('/admin/trick')]
 final class TrickController extends AbstractController
@@ -57,7 +59,7 @@ final class TrickController extends AbstractController
                         $imagePaths[] = $newFilename;
                         $index++;
                     } catch (\Exception $e) { //error
-                        $this->addFlash('error', 'L\'upload d\'une image a échoué.');
+                        $this->addFlash('error', 'Image upload failed.');
                     }
                 }
 
@@ -104,13 +106,32 @@ final class TrickController extends AbstractController
     public function delete(Request $request, Trick $trick, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
+            $filesystem = new Filesystem();
+            $imageDir = $this->getParameter('images_directory'); //services.yaml
+
+            //delete in dir
+            foreach ($trick->getImagePaths() as $imageFileName) {
+                $imagePath = $imageDir . '/' . $imageFileName;
+
+                if ($filesystem->exists($imagePath)) {
+                    try {
+                        $filesystem->remove($imagePath);
+                    } catch (IOExceptionInterface $exception) {
+                        $this->addFlash('error', 'An error occurred while deleting an image : ' . $imageFileName);
+                    }
+                }
+            }
+
+            //delete entity trick
             $em->remove($trick);
             $em->flush();
-            $this->addFlash('success', 'Le trick a bien été supprimé.');
+
+            $this->addFlash('success', 'The trick has been successfully removed.');
         }
 
         return $this->redirectToRoute('app_homepage');
     }
+
 
     //trick detail
     #[Route('/{id}', name: 'app_admin_trick_show', methods: ['GET'])]
