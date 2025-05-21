@@ -1,37 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Homepage{% endblock %}
+{% block title %}Trick{% endblock %}
 
 {% block body %}
-    <!-- Page Header-->
-    <header class="masthead" style="background-image: url('{{ asset('img/snowboard-bg.jpg') }}')">
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('{{ trick.mainImage ? asset('uploads/images/' ~ trick.mainImage) : asset('img/snowboard-bg.jpg') }}')">
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <div class="site-heading">
-                        <h1>Edit : {{ trick.name }}</h1>
+                        <h1>Edition : {{ trick.name }}</h1>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Back Button -->
-    <div class="container px-4 px-lg-5 my-3">
-        <a href="{{ path('app_homepage') }}#trick-list" class="btn btn-secondary text-uppercase">
-            ← Back to list
-        </a>
-    </div>
-
-    <!-- Main Content-->
-    <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                {{ form_start(form) }}
-                    {{ form_widget(form) }}
-                    <button type="submit" class="btn btn-primary">Send</button>
-                {{ form_end(form) }}
-            </div>
+    <div class="container flex px-4 px-lg-5">
+        <div class="d-flex justify-content-around flex-wrap gap-3">
+            {# show images except the main one #}
+            {% for image in trick.imagePaths %}
+                {% if image != trick.mainImage %}
+                    <img src="{{ asset('uploads/images/' ~ image) }}" alt="{{ trick.name }}" style="max-width: 200px;">
+                {% endif %}
+            {% endfor %}
         </div>
+        
+        <div>
+            <span class="badge bg-primary">{{ trick.type }}</span>
+            <span class="badge bg-info">Créé le 04/03/2025 à 12h00</span>
+            <span class="badge bg-info">Modifié le 04/03/2025 à 16h00</span>
+        </div>
+                
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Send</button>
+        {{ form_end(form) }}
+
     </div>
 {% endblock %}
