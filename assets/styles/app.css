@@ -120,3 +120,16 @@ hr {
 header.masthead{
     margin-bottom: 1rem;
 }
+
+#trickModalBody {
+  position: relative !important;
+}
+
+#trickModalBody > .btn-close {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  z-index: 1051 !important; /* Bootstrap modals ont z-index 1050 environ */
+  display: block !important;
+  opacity: 1 !important;
+}

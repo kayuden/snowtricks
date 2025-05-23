@@ -44,7 +44,7 @@
                                     {{ trick.name }}
                                 </a>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ path('app_admin_trick_edit', { 'id': trick.id }) }}">
+                                    <a href="#" class="open-trick-edit-modal" data-id="{{ trick.id }}">
                                         <img src="{{ asset('img/pencil-solid.svg') }}" alt="Edit" width="18">
                                     </a>
                                     <form method="post" action="{{ path('app_admin_trick_delete', { 'id': trick.id }) }}" onsubmit="return confirm('Supprimer ce trick ?');">
@@ -83,14 +83,27 @@
     <!-- Trick Detail Modal -->
     <div class="modal fade" id="trickModal" tabindex="-1" aria-labelledby="trickModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content position-relative">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body overflow-auto" id="trickModalBody" style="background: white; padding: 0;">
+                    <!-- trick detail content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trick Edit Modal -->
+    <div class="modal fade" id="trickEditModal" tabindex="-1" aria-labelledby="trickEditModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="trickModalLabel">Titre du trick</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-            </div>
-            <div class="modal-body overflow-auto" id="trickModalBody" style="background: white;">
-                <!-- trick content -->
-            </div>
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body overflow-auto" id="trickEditModalBody" style="background: white; padding: 0;">
+                    <!-- edit form content -->
+                </div>
             </div>
         </div>
     </div>

@@ -18,11 +18,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 #[Route('/admin/trick')]
 final class TrickController extends AbstractController
 {
-    //trick detail
-    #[Route('/modal/{id}', name: 'trick_modal')]
+    //trick detail modal
+    #[Route('/modal/show/{id}', name: 'app_admin_trick_modal_show')]
     public function modal(Trick $trick): Response
     {
-        return $this->render('admin/trick/_modal_details.html.twig', [
+        return $this->render('admin/trick/_modal_show.html.twig', [
             'trick' => $trick,
         ]);
     }
@@ -93,9 +93,8 @@ final class TrickController extends AbstractController
         ]);
     }
 
-
     // trick modification
-    #[Route('/edit/{id}', name: 'app_admin_trick_edit', methods: ['GET', 'POST'])]
+    #[Route('/modal/edit/{id}', name: 'app_admin_trick_modal_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Trick $trick, EntityManagerInterface $manager): Response
     {
         $form = $this->createForm(TrickType::class, $trick);
@@ -110,7 +109,7 @@ final class TrickController extends AbstractController
             return $this->redirectToRoute('app_homepage');
         }
 
-        return $this->render('admin/trick/edit.html.twig', [
+        return $this->render('admin/trick/_modal_edit.html.twig', [
             'form' => $form,
             'trick' => $trick,
         ]);
