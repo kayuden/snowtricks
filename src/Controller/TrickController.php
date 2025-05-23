@@ -13,7 +13,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/admin/trick')]
 final class TrickController extends AbstractController

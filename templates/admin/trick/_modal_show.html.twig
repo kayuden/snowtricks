@@ -26,8 +26,10 @@
         
         <div>
             <span class="badge bg-primary">{{ trick.type }}</span>
-            <span class="badge bg-info">Créé le 04/03/2025 à 12h00</span>
-            <span class="badge bg-info">Modifié le 04/03/2025 à 16h00</span>
+            <span class="badge bg-info">Créé le {{ trick.createdAt|date('d/m/Y à H\\hi') }}</span>
+            {% if trick.editedAt != trick.createdAt %}
+                <span class="badge bg-info">Modifié le {{ trick.editedAt|date('d/m/Y à H\\hi') }}</span>
+            {% endif %}
         </div>
         
         <hr/>
