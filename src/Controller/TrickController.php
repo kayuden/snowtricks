@@ -13,10 +13,24 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/admin/trick')]
 final class TrickController extends AbstractController
 {
+    // trick detail
+    #[Route('/trick/ajax/{id}', name: 'app_trick_ajax_show', methods: ['GET'])]
+    public function ajaxShow(Trick $trick): JsonResponse
+    {
+        $data = [
+            'name' => $trick->getName(),
+            'description' => $trick->getDescription(),
+            'images' => array_map(fn($img) => '/uploads/images/' . $img, $trick->getImagePaths()),
+        ];
+
+        return new JsonResponse($data);
+    }
+
     // trick creation
     #[Route('/new', name: 'app_admin_trick_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $manager, SluggerInterface $slugger): Response

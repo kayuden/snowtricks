@@ -1,7 +1,8 @@
+import 'bootstrap'; //php bin/console importmap:require bootstrap
 import './bootstrap.js';
 import './js/scripts.js';
 import './js/homepage.js';
-/*
+/* AssetMapper
  * Welcome to your app's main JavaScript file!
  *
  * This file will be included onto the page via the importmap() Twig function,

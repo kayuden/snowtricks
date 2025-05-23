@@ -1,3 +1,31 @@
+import * as bootstrap from 'bootstrap';
+
+document.addEventListener('DOMContentLoaded', () => {
+    //init modal
+    const modalElement = document.getElementById('trickModal');
+    const modal = new bootstrap.Modal(modalElement);
+
+    document.querySelectorAll('.open-trick-modal').forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const trickId = e.currentTarget.dataset.id;
+
+            //recover trick id
+            const response = await fetch(`/admin/trick/trick/ajax/${trickId}`);
+            const data = await response.json();
+            
+            //AJAX request
+            document.getElementById('trickModalLabel').textContent = data.name;
+            document.getElementById('trickModalBody').innerHTML = `
+                <p>${data.description || 'Pas de description.'}</p>
+                ${data.images.map(img => `<img src="${img}" alt="Image du trick">`).join('')}
+            `;
+
+            modal.show();
+        });
+    });
+});
+
 document.addEventListener('turbo:load', function () {
 
     // Scroll to top arrow
