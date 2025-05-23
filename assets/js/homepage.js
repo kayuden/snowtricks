@@ -5,23 +5,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalElement = document.getElementById('trickModal');
     const modal = new bootstrap.Modal(modalElement);
 
+    //listen link
     document.querySelectorAll('.open-trick-modal').forEach(link => {
+        //click management
         link.addEventListener('click', async (e) => {
             e.preventDefault();
+            //trick id recover
             const trickId = e.currentTarget.dataset.id;
 
-            //recover trick id
-            const response = await fetch(`/admin/trick/trick/ajax/${trickId}`);
-            const data = await response.json();
-            
-            //AJAX request
-            document.getElementById('trickModalLabel').textContent = data.name;
-            document.getElementById('trickModalBody').innerHTML = `
-                <p>${data.description || 'Pas de description.'}</p>
-                ${data.images.map(img => `<img src="${img}" alt="Image du trick">`).join('')}
-            `;
+            try {
+                //AJAX request
+                const response = await fetch(`/admin/trick/modal/${trickId}`);
+                if (!response.ok) throw new Error('Erreur de chargement du contenu');
+                const html = await response.text();
 
-            modal.show();
+                //content injection in the modal
+                document.getElementById('trickModalBody').innerHTML = html;
+
+                //modal title based on h1
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const title = doc.querySelector('h1')?.textContent;
+                if (title) {
+                    document.getElementById('trickModalLabel').textContent = title;
+                }
+
+                //modal display
+                modal.show();
+            } catch (error) {
+                console.error('Erreur AJAX :', error);
+            }
         });
     });
 });

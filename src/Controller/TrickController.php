@@ -18,20 +18,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 #[Route('/admin/trick')]
 final class TrickController extends AbstractController
 {
-    // trick detail
-    #[Route('/trick/ajax/{id}', name: 'app_trick_ajax_show', methods: ['GET'])]
-    public function ajaxShow(Trick $trick): JsonResponse
+    //trick detail
+    #[Route('/modal/{id}', name: 'trick_modal')]
+    public function modal(Trick $trick): Response
     {
-        $data = [
-            'name' => $trick->getName(),
-            'description' => $trick->getDescription(),
-            'images' => array_map(fn($img) => '/uploads/images/' . $img, $trick->getImagePaths()),
-        ];
-
-        return new JsonResponse($data);
+        return $this->render('admin/trick/_modal_details.html.twig', [
+            'trick' => $trick,
+        ]);
     }
 
-    // trick creation
+    //trick creation
     #[Route('/new', name: 'app_admin_trick_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $manager, SluggerInterface $slugger): Response
     {
@@ -149,15 +145,5 @@ final class TrickController extends AbstractController
         }
 
         return $this->redirectToRoute('app_homepage');
-    }
-
-
-    //trick detail
-    #[Route('/{id}', name: 'app_admin_trick_show', methods: ['GET'])]
-    public function show(?Trick $trick): Response
-    {
-        return $this->render('admin/trick/show.html.twig', [
-            'trick' => $trick,
-        ]);
     }
 }
