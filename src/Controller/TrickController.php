@@ -104,8 +104,6 @@ final class TrickController extends AbstractController
             $trick->setEditedAt(new \DateTimeImmutable());
 
             $manager->flush();
-
-            return $this->redirectToRoute('app_homepage');
         }
 
         return $this->render('admin/trick/_modal_edit.html.twig', [
