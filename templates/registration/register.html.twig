@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <style>
+        label.required:before {
+            content: "* ";
+            color: red;
+        }
+    </style>
+
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('{{ asset('img/snowboard-bg.jpg') }}')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="site-heading">
+                        <h1>Register</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <span class="text-muted"><small>*: required field</small></span>
+                {{ form_errors(registrationForm) }}
+
+                {{ form_start(registrationForm) }}
+                    {{ form_row(registrationForm.firstname, {label: 'Firstname'}) }}
+                    {{ form_row(registrationForm.lastname, {label: 'Name'}) }}
+                    {{ form_row(registrationForm.username, {label: 'Username'}) }}
+                    {{ form_row(registrationForm.email, {label: 'E-mail'}) }}
+                    {{ form_row(registrationForm.plainPassword, {
+                        label: 'Password'
+                    }) }}
+                    {{ form_row(registrationForm.agreeTerms) }}
+
+                    <button type="submit" class="btn btn-primary">Register</button>
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

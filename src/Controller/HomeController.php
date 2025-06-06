@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\TrickRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,6 +17,9 @@ final class HomeController extends AbstractController
     {
         $tricks = $repository->findBy([], ['createdAt' => 'DESC'], 15);
         //$tricks = $repository->findAll();
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',

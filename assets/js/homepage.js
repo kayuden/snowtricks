@@ -47,54 +47,63 @@ document.addEventListener('turbo:load', function () {
     }
 
     //init modal
+    let modal = null;
     const modalElement = document.getElementById('trickModal');
-    const modal = new bootstrap.Modal(modalElement);
+    if (modalElement) {
+        modal = new bootstrap.Modal(modalElement);
+    }
+
+    let editModal = null;
     const editModalElement = document.getElementById('trickEditModal');
-    const editModal = new bootstrap.Modal(editModalElement);
+    if (editModalElement) {
+        editModal = new bootstrap.Modal(editModalElement);
+    }
 
     //listen link via event delegation
-    trickList.addEventListener('click', async (e) => {
-        const openModalLink = e.target.closest('.open-trick-modal');
-        const openEditLink = e.target.closest('.open-trick-edit-modal');
+    if (trickList) {
+        trickList.addEventListener('click', async (e) => {
+            const openModalLink = e.target.closest('.open-trick-modal');
+            const openEditLink = e.target.closest('.open-trick-edit-modal');
 
-        if (openModalLink) {
-            e.preventDefault();
-            //trick id recover
-            const trickId = openModalLink.dataset.id;
+            if (openModalLink && modal) {
+                e.preventDefault();
+                //trick id recover
+                const trickId = openModalLink.dataset.id;
 
-            try {
-                //AJAX request
-                const response = await fetch(`/admin/trick/modal/show/${trickId}`);
-                if (!response.ok) throw new Error('Content loading error');
-                const html = await response.text();
+                try {
+                    //AJAX request
+                    const response = await fetch(`/admin/trick/modal/show/${trickId}`);
+                    if (!response.ok) throw new Error('Content loading error');
+                    const html = await response.text();
 
-                //content injection in the modal
-                document.getElementById('trickModalBody').innerHTML = html;
+                    //content injection in the modal
+                    document.getElementById('trickModalBody').innerHTML = html;
 
-                //modal display
-                modal.show();
-            } catch (error) {
-                console.error('AJAX Error (show):', error);
+                    //modal display
+                    modal.show();
+                } catch (error) {
+                    console.error('AJAX Error (show):', error);
+                }
             }
-        }
 
-        if (openEditLink) {
-            e.preventDefault();
-            const trickId = openEditLink.dataset.id;
+            if (openEditLink && editModal) {
+                e.preventDefault();
+                const trickId = openEditLink.dataset.id;
 
-            try {
-                const response = await fetch(`/admin/trick/modal/edit/${trickId}`);
-                if (!response.ok) throw new Error('Form loading error');
-                const html = await response.text();
+                try {
+                    const response = await fetch(`/admin/trick/modal/edit/${trickId}`);
+                    if (!response.ok) throw new Error('Form loading error');
+                    const html = await response.text();
 
-                //content injection in the modal
-                document.getElementById('trickEditModalBody').innerHTML = html;
+                    //content injection in the modal
+                    document.getElementById('trickEditModalBody').innerHTML = html;
 
-                //modal display
-                editModal.show();
-            } catch (error) {
-                console.error('AJAX Error (edit) :', error);
+                    //modal display
+                    editModal.show();
+                } catch (error) {
+                    console.error('AJAX Error (edit) :', error);
+                }
             }
-        }
-    });
+        });
+    }
 });

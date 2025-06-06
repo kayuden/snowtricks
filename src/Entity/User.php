@@ -4,12 +4,15 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -28,17 +31,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string The hashed password
+     * La contrainte Regex valide que le mot de passe :
+     * * contient au moins un chiffre
+     * * contient au moins une lettre en minuscule
+     * * contient au moins une lettre en majuscule
+     * * contient au moins un caractère spécial qui n'est pas un espace
+     * * fait entre 8 et 32 caractères de long
      */
+    #[Assert\NotCompromisedPassword()]
+    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_STRONG)]
+    #[Assert\Regex('/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).{8,32}$/')]
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255)]
+    #[Assert\Email()]
+    #[Assert\NotBlank()]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     public function getId(): ?int
@@ -70,6 +86,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     *
+     * @return list<string>
      */
     public function getRoles(): array
     {
@@ -93,7 +111,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
     }
