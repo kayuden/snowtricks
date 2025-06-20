@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationForm;
+use App\Form\RegistrationType;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Mime\Email;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,7 +21,7 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer, UrlGeneratorInterface $urlGenerator): Response
     {
         $user = new User();
-        $form = $this->createForm(RegistrationForm::class, $user);
+        $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -64,7 +64,7 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
+            'registrationType' => $form,
         ]);
     }
 
@@ -81,7 +81,7 @@ class RegistrationController extends AbstractController
         $user->setVerificationToken(null);
         $em->flush();
 
-        $this->addFlash('success', 'Your account is now activated. You can log in.');
+        $this->addFlash('success', 'Your account is now activated. You can sign in.');
 
         return $this->redirectToRoute('app_login');
     }

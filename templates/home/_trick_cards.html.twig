@@ -8,7 +8,7 @@
                 <a href="#" class="fw-bold open-trick-modal" data-id="{{ trick.id }}">
                     {{ trick.name }}
                 </a>
-                {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.isVerified %}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <div class="d-flex gap-2">
                         <a href="#" class="open-trick-edit-modal" data-id="{{ trick.id }}">
                             <img src="{{ asset('img/pencil-solid.svg') }}" alt="Edit" width="18">

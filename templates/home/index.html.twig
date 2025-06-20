@@ -27,17 +27,11 @@
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <!-- New trick -->
             {% if app.user %}
-                {% if app.user.isVerified %}
-                    <div class="container px-4 px-lg-5 my-3">
-                        <a href="{{ path('app_trick_new') }}#trick-list" class="btn btn-secondary text-uppercase">
-                            New trick
-                        </a>
-                    </div>
-                {% else %}
-                    <div class="alert alert-danger text-center" role="alert">
-                    To create, modify or delete a trick, please validate your account via the email received at your email address
-                    </div>
-                {% endif %}
+                <div class="container px-4 px-lg-5 my-3">
+                    <a href="{{ path('app_trick_new') }}#trick-list" class="btn btn-secondary text-uppercase">
+                        New trick
+                    </a>
+                </div>
             {% endif %}
             
             <!-- Trick list -->
@@ -52,7 +46,7 @@
                                 <a href="#" class="fw-bold open-trick-modal" data-id="{{ trick.id }}">
                                     {{ trick.name }}
                                 </a>
-                                {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.isVerified %}
+                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                                     <div class="d-flex gap-2">
                                         <a href="#" class="open-trick-edit-modal" data-id="{{ trick.id }}">
                                             <img src="{{ asset('img/pencil-solid.svg') }}" alt="Edit" width="18">
