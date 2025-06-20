@@ -27,8 +27,14 @@
                     <ul class="navbar-nav ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/">Home</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="#tricks-block">Tricks</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/login">Sign in</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/register">Sign up</a></li>
+                        {% if app.user %}
+                            <li class="nav-item">
+                                <a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ path('app_logout') }}">Log out</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ path('app_login') }}">Sign in</a></li>
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{{ path('app_register') }}">Sign up</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

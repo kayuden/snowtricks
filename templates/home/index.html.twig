@@ -22,16 +22,25 @@
         </div>
     </header>
 
-    <!-- New trick -->
-    <div class="container px-4 px-lg-5 my-3">
-        <a href="{{ path('app_admin_trick_new') }}#trick-list" class="btn btn-secondary text-uppercase">
-            New trick
-        </a>
-    </div>
-
     <!-- Main Content-->
     <div id="tricks-block" class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
+            <!-- New trick -->
+            {% if app.user %}
+                {% if app.user.isVerified %}
+                    <div class="container px-4 px-lg-5 my-3">
+                        <a href="{{ path('app_trick_new') }}#trick-list" class="btn btn-secondary text-uppercase">
+                            New trick
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger text-center" role="alert">
+                    To create, modify or delete a trick, please validate your account via the email received at your email address
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <!-- Trick list -->
             <div id="trick-list" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 mb-4">
                 {% for trick in tricks %}
                     <div class="col trick-card">
@@ -43,17 +52,19 @@
                                 <a href="#" class="fw-bold open-trick-modal" data-id="{{ trick.id }}">
                                     {{ trick.name }}
                                 </a>
-                                <div class="d-flex gap-2">
-                                    <a href="#" class="open-trick-edit-modal" data-id="{{ trick.id }}">
-                                        <img src="{{ asset('img/pencil-solid.svg') }}" alt="Edit" width="18">
-                                    </a>
-                                    <form method="post" action="{{ path('app_admin_trick_delete', { 'id': trick.id }) }}" onsubmit="return confirm('Supprimer ce trick ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-                                        <button class="btn p-0 border-0 bg-transparent" type="submit">
-                                            <img src="{{ asset('img/trash-solid.svg') }}" alt="Delete" width="18">
-                                        </button>
-                                    </form>
-                                </div>
+                                {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.isVerified %}
+                                    <div class="d-flex gap-2">
+                                        <a href="#" class="open-trick-edit-modal" data-id="{{ trick.id }}">
+                                            <img src="{{ asset('img/pencil-solid.svg') }}" alt="Edit" width="18">
+                                        </a>
+                                        <form method="post" action="{{ path('app_trick_delete', { 'id': trick.id }) }}" onsubmit="return confirm('Supprimer ce trick ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                            <button class="btn p-0 border-0 bg-transparent" type="submit">
+                                                <img src="{{ asset('img/trash-solid.svg') }}" alt="Delete" width="18">
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

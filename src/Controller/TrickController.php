@@ -14,20 +14,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
-#[Route('/admin/trick')]
+#[Route('/trick')]
 final class TrickController extends AbstractController
 {
     //trick detail modal
-    #[Route('/modal/show/{id}', name: 'app_admin_trick_modal_show')]
+    #[Route('/modal/show/{id}', name: 'app_trick_modal_show')]
     public function modal(Trick $trick): Response
     {
-        return $this->render('admin/trick/_modal_show.html.twig', [
+        return $this->render('trick/_modal_show.html.twig', [
             'trick' => $trick,
         ]);
     }
 
     //trick creation
-    #[Route('/new', name: 'app_admin_trick_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_trick_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $manager, SluggerInterface $slugger): Response
     {
         $trick = new Trick();
@@ -87,13 +87,13 @@ final class TrickController extends AbstractController
             return $this->redirectToRoute('app_homepage');
         }
 
-        return $this->render('admin/trick/new.html.twig', [
+        return $this->render('trick/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     // trick modification
-    #[Route('/modal/edit/{id}', name: 'app_admin_trick_modal_edit', methods: ['GET', 'POST'])]
+    #[Route('/modal/edit/{id}', name: 'app_trick_modal_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Trick $trick, EntityManagerInterface $manager): Response
     {
         $form = $this->createForm(TrickType::class, $trick);
@@ -106,14 +106,14 @@ final class TrickController extends AbstractController
             $manager->flush();
         }
 
-        return $this->render('admin/trick/_modal_edit.html.twig', [
+        return $this->render('trick/_modal_edit.html.twig', [
             'form' => $form,
             'trick' => $trick,
         ]);
     }
 
     //trick deletion
-    #[Route('/delete/{id}', name: 'app_admin_trick_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['POST'])]
     public function delete(Request $request, Trick $trick, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
