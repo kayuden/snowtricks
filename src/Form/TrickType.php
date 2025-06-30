@@ -6,8 +6,10 @@ use App\Entity\Trick;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class TrickType extends AbstractType
 {
@@ -34,6 +36,18 @@ class TrickType extends AbstractType
                 'mapped' => false, // not mapped directly to Trick entity
                 'multiple' => true, //multiple upload
                 'required' => false,
+            ])
+            ->add('videoEmbeds', CollectionType::class, [
+                'entry_type' => TextareaType::class,
+                'entry_options' => [
+                    'attr' => ['placeholder' => 'Paste your embed code here...','rows' => 3],
+                    'label' => false,
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'mapped' => true,
+                'required' => false,
+                'by_reference' => false,
             ])
         ;
     }

@@ -16,10 +16,6 @@ final class HomeController extends AbstractController
     public function index(TrickRepository $repository): Response
     {
         $tricks = $repository->findBy([], ['createdAt' => 'DESC'], 15);
-        //$tricks = $repository->findAll();
-
-        //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        //$user = $this->getUser();
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',

@@ -25,6 +25,16 @@
     <!-- Main Content-->
     <div id="tricks-block" class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
+            
+            <!-- Flash messages -->
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-{{ label }}">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
             <!-- New trick -->
             {% if app.user %}
                 <div class="container px-4 px-lg-5 my-3">
@@ -43,12 +53,12 @@
                             {% set imagePath = firstImage ? 'uploads/images/' ~ firstImage : 'img/snowboard-bg.jpg' %}
                             <img src="{{ asset(imagePath) }}" class="card-img-top" alt="Trick image">
                             <div class="card-body d-flex justify-content-between align-items-center">
-                                <a href="#" class="fw-bold open-trick-modal" data-id="{{ trick.id }}">
+                                <a href="{{ path('app_trick_show', { id: trick.id }) }}" class="fw-bold">
                                     {{ trick.name }}
                                 </a>
                                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                                     <div class="d-flex gap-2">
-                                        <a href="#" class="open-trick-edit-modal" data-id="{{ trick.id }}">
+                                        <a href="{{ path('app_trick_edit', { id: trick.id }) }}">
                                             <img src="{{ asset('img/pencil-solid.svg') }}" alt="Edit" width="18">
                                         </a>
                                         <form method="post" action="{{ path('app_trick_delete', { 'id': trick.id }) }}" onsubmit="return confirm('Supprimer ce trick ?');">
@@ -83,34 +93,6 @@
         <a href="#">
             <img src="{{ asset('img/arrow-up.svg') }}" alt="Up arrow" width="32" height="32">
         </a>
-    </div>
-
-    <!-- Trick Detail Modal -->
-    <div class="modal fade" id="trickModal" tabindex="-1" aria-labelledby="trickModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content position-relative">
-                <div class="modal-header border-0">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body overflow-auto" id="trickModalBody" style="background: white; padding: 0;">
-                    <!-- trick detail content -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Trick Edit Modal -->
-    <div class="modal fade" id="trickEditModal" tabindex="-1" aria-labelledby="trickEditModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body overflow-auto" id="trickEditModalBody" style="background: white; padding: 0 0 20px 0;">
-                    <!-- edit form content -->
-                </div>
-            </div>
-        </div>
     </div>
 
 {% endblock %}

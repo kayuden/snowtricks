@@ -3,10 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\TrickRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
+#[UniqueEntity('name', message: 'This trick already exists.')]
 class Trick
 {
     #[ORM\Id]
@@ -32,8 +36,22 @@ class Trick
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $imagePaths = [];
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $mainImage = null;
+
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'trick', orphanRemoval: true)]
+    private Collection $comments;
+
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private ?array $videoEmbeds = null;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -100,12 +118,12 @@ class Trick
         return $this;
     }
 
-    public function getimagePaths(): ?array
+    public function getImagePaths(): ?array
     {
         return $this->imagePaths;
     }
 
-    public function setimagePaths(?array $imagePaths): self
+    public function setImagePaths(?array $imagePaths): self
     {
         $this->imagePaths = $imagePaths;
 
@@ -117,9 +135,51 @@ class Trick
         return $this->mainImage;
     }
 
-    public function setMainImage(string $mainImage): static
+    public function setMainImage(?string $mainImage): static
     {
         $this->mainImage = $mainImage;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getTrick() === $this) {
+                $comment->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getVideoEmbeds(): ?array
+    {
+        return $this->videoEmbeds;
+    }
+
+    public function setVideoEmbeds(?array $videoEmbeds): static
+    {
+        $this->videoEmbeds = $videoEmbeds;
 
         return $this;
     }

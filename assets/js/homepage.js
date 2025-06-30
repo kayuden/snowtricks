@@ -72,7 +72,7 @@ document.addEventListener('turbo:load', function () {
 
                 try {
                     //AJAX request
-                    const response = await fetch(`/trick/modal/show/${trickId}`);
+                    const response = await fetch(`/trick/show/${trickId}`);
                     if (!response.ok) throw new Error('Content loading error');
                     const html = await response.text();
 
@@ -91,7 +91,7 @@ document.addEventListener('turbo:load', function () {
                 const trickId = openEditLink.dataset.id;
 
                 try {
-                    const response = await fetch(`/trick/modal/edit/${trickId}`);
+                    const response = await fetch(`/trick/edit/${trickId}`);
                     if (!response.ok) throw new Error('Form loading error');
                     const html = await response.text();
 
