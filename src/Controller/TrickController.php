@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 final class TrickController extends AbstractController
 {
     //trick detail
-    #[Route('/show/{id}', name: 'app_trick_show')]
+    #[Route('/show/{id}', name: 'app_trick_show', methods: ['GET'])]
     public function show(Trick $trick,Request $request,EntityManagerInterface $em): Response {
         $commentForm = null;
 

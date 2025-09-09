@@ -17,7 +17,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+    #[Route(path: '/register', name: 'app_register', methods: ['GET', 'POST'])]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer, UrlGeneratorInterface $urlGenerator): Response
     {
         $user = new User();
@@ -68,7 +68,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/verify/email/{token}', name: 'app_verify_email')]
+    #[Route(path: '/verify/email', name: 'app_verify_email', methods: ['GET'])]
     public function verifyEmail(string $token, EntityManagerInterface $em): Response
     {
         $user = $em->getRepository(User::class)->findOneBy(['verificationToken' => $token]);
