@@ -29,7 +29,7 @@ document.addEventListener('turbo:load', function () {
                 .then(data => {
                     console.log(data); // debug
                     trickList.insertAdjacentHTML('beforeend', data.html);
-                    loadMoreBtn.setAttribute('data-offset', offset + 10);
+                    loadMoreBtn.setAttribute('data-offset', offset + 5);
 
                     if (!data.hasMore) {
                         loadMoreBtn.remove();

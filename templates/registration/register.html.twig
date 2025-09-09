@@ -16,7 +16,7 @@
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <div class="site-heading">
-                        <h1>Register</h1>
+                        <h1>Registration</h1>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,8 @@
                     {{ form_row(registrationType.email, {label: 'E-mail'}) }}
                     {{ form_row(registrationType.plainPassword, {label: 'Password'}) }}
                     {{ form_row(registrationType.agreeTerms) }}
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="submit" class="btn btn-primary">Create an account</button>
+                    <span class="text-muted"><small><a class="nav-link" href="{{ path('app_login') }}">Already an account ?</a></small></span>
                 {{ form_end(registrationType) }}
             </div>
         </div>

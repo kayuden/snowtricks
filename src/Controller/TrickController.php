@@ -8,7 +8,6 @@ use App\Entity\Comment;
 use App\Form\TrickType;
 use App\Form\CommentType;
 use App\Repository\TrickRepository;
-use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[Route('/trick')]
 final class TrickController extends AbstractController
@@ -38,8 +38,6 @@ final class TrickController extends AbstractController
             if ($commentForm->isSubmitted() && $commentForm->isValid()) {
                 $em->persist($comment);
                 $em->flush();
-
-                $this->addFlash('success', 'Commentaire ajouté !');
 
                 return $this->redirectToRoute('app_trick_show', ['id' => $trick->getId()]);
             }
@@ -135,23 +133,138 @@ final class TrickController extends AbstractController
 
     // trick modification
     #[Route('/edit/{id}', name: 'app_trick_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Trick $trick, EntityManagerInterface $manager): Response
-    {
-        $form = $this->createForm(TrickType::class, $trick);
+    public function edit(Request $request,Trick $trick,EntityManagerInterface $em,SluggerInterface $slugger
+    ): Response {
+        
+        if (count($trick->getVideoEmbeds() ?? []) === 0) {
+            $trick->setVideoEmbeds(['']);
+        }
 
+        $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setEditedAt(new \DateTimeImmutable());
 
-            $manager->flush();
+            /** @var UploadedFile[]|null $imageFiles */
+            $imageFiles = $form->get('imagePaths')->getData();
+            $imagesDir  = $this->getParameter('images_directory');
+
+            if ($imageFiles) {
+                $slug = $slugger->slug($trick->getName())->lower();
+                $timestamp = (new \DateTime())->format('Ymd_His');
+
+                $existing = $trick->getImagePaths() ?? [];
+                $index = count($existing) + 1;
+
+                foreach ($imageFiles as $file) {
+                    $ext = $file->guessExtension() ?: 'bin';
+                    $new = sprintf('%s_%d_%s.%s', $slug, $index, $timestamp, $ext);
+                    $file->move($imagesDir, $new);
+                    $existing[] = $new;
+
+                    if (!$trick->getMainImage()) {
+                        $trick->setMainImage($new);
+                    }
+                    $index++;
+                }
+                $trick->setImagePaths($existing);
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'The trick has been successfully updated');
+            return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
         }
 
         return $this->render('trick/edit.html.twig', [
-            'form' => $form,
+            'form'  => $form->createView(),
             'trick' => $trick,
         ]);
     }
+
+    //set main image
+    #[Route('/{id}/image/main', name: 'app_trick_image_set_main', methods: ['POST'])]
+    public function setMainImage(Request $request, Trick $trick, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $filename = $request->request->get('filename');
+        if (!$filename || !in_array($filename, $trick->getImagePaths() ?? [], true)) {
+            $this->addFlash('danger', 'Image not found');
+            return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+        }
+
+        $trick->setMainImage($filename);
+        $trick->setEditedAt(new \DateTimeImmutable());
+        $em->flush();
+
+        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+    }
+
+    //delete an image
+    #[Route('/{id}/image/delete', name: 'app_trick_image_delete', methods: ['POST'])]
+    public function deleteImage(
+        Request $request,
+        Trick $trick,
+        EntityManagerInterface $em
+    ): Response {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (!$this->isCsrfTokenValid('delete_image_'.$trick->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $filename   = $request->request->get('filename');
+        $images     = $trick->getImagePaths() ?? [];
+        $imagesDir  = $this->getParameter('images_directory');
+
+        if ($filename && in_array($filename, $images, true)) {
+            $path = $imagesDir.'/'.$filename;
+            if (is_file($path)) {
+                @unlink($path);
+            }
+            
+            $images = array_values(array_filter($images, fn($i) => $i !== $filename));
+            $trick->setImagePaths($images);
+
+            if ($trick->getMainImage() === $filename) {
+                $trick->setMainImage($images[0] ?? null);
+            }
+
+            $trick->setEditedAt(new \DateTimeImmutable());
+            $em->flush();
+
+            $this->addFlash('info', 'Image deleted');
+        }
+
+        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+    }
+
+    //delete a video
+    #[Route('/{id}/video/delete', name: 'app_trick_video_delete', methods: ['POST'])]
+    public function deleteVideo(Request $request, Trick $trick, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (!$this->isCsrfTokenValid('delete_video_'.$trick->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $index = (int) $request->request->get('index');
+        $videos = $trick->getVideoEmbeds() ?? [];
+
+        if (isset($videos[$index])) {
+            unset($videos[$index]);
+            $trick->setVideoEmbeds(array_values($videos));
+            $trick->setEditedAt(new \DateTimeImmutable());
+            $em->flush();
+            $this->addFlash('info', 'Vidéo deleted');
+        }
+
+        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+    }
+
 
     //trick deletion
     #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['POST'])]

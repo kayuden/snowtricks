@@ -17,23 +17,22 @@
     </header>
 
     <div class="container flex px-4 px-lg-5">
-        <div class="d-flex justify-content-around flex-wrap gap-3">
-            {# show images except the main one #}
+        <div class="media-gallery d-flex flex-wrap gap-3 justify-content-around">
             {% for image in trick.imagePaths %}
                 {% if image != trick.mainImage %}
-                    <img src="{{ asset('uploads/images/' ~ image) }}" alt="{{ trick.name }}" style="max-width: 200px;">
+                    <div class="media-item">
+                        <img src="{{ asset('uploads/images/' ~ image) }}" 
+                            alt="{{ trick.name }}">
+                    </div>
                 {% endif %}
             {% endfor %}
-
-            {# show videos #}
+            
             {% if trick.videoEmbeds is not empty %}
-                <div class="videos-embeds d-flex flex-wrap gap-3">
-                    {% for embed in trick.videoEmbeds %}
-                        <div class="video-embed" style="flex: 1 1 300px; max-width: 500px;">
-                            {{ embed|raw }}
-                        </div>
-                    {% endfor %}
-                </div>
+                {% for embed in trick.videoEmbeds %}
+                    <div class="media-item video">
+                        {{ embed|raw }}
+                    </div>
+                {% endfor %}
             {% endif %}
         </div>
 
@@ -48,8 +47,10 @@
         
         <div>
             <span class="badge bg-primary">{{ trick.type }}</span>
-            <span class="badge bg-info">Créé le 04/03/2025 à 12h00</span>
-            <span class="badge bg-info">Modifié le 04/03/2025 à 16h00</span>
+            <span class="badge bg-info">Created on {{ trick.createdAt|date('d/m/Y \\a\\t H\\hi') }}</span>
+            {% if trick.editedAt > trick.createdAt %}
+                <span class="badge bg-info">Modified on {{ trick.editedAt|date('d/m/Y \\a\\t H\\hi') }}</span>
+            {% endif %}
         </div>
         
         <hr/>

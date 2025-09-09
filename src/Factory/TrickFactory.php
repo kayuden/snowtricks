@@ -42,6 +42,7 @@ final class TrickFactory extends PersistentProxyObjectFactory
             'editedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'imagePaths' => ['monimage_1_20250509_151654.jpg'],
             'mainImage' => 'monimage_1_20250509_151654.jpg',
+            'videoEmbeds' => ['<iframe width="560" height="315" src="https://www.youtube.com/embed/ZqdFGAoHDzc?si=nIMpkwshIgfxzHBq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'],
         ];
     }
 

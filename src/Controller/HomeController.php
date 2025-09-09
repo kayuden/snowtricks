@@ -15,7 +15,7 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_homepage')]
     public function index(TrickRepository $repository): Response
     {
-        $tricks = $repository->findBy([], ['createdAt' => 'DESC'], 15);
+        $tricks = $repository->findBy([], ['createdAt' => 'DESC'], 10);
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
@@ -27,7 +27,7 @@ final class HomeController extends AbstractController
     public function loadTricks(TrickRepository $repository, Request $request): JsonResponse
     {
         $offset = $request->query->getInt('offset', 0);
-        $limit = 10;
+        $limit = 5;
 
         $tricks = $repository->findBy([], ['createdAt' => 'DESC'], $limit, $offset);
         

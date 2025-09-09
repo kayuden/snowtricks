@@ -16,7 +16,7 @@ class ForgotPasswordType extends AbstractType
             ->add('username', TextType::class, [
                 'label' => 'Username',
             ])
-            ->add('submit', SubmitType::class, ['label' => 'Send link'])
+            ->add('submit', SubmitType::class, ['label' => 'Ask for reset'])
         ;
     }
 

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class TrickType extends AbstractType
 {
@@ -26,10 +27,17 @@ class TrickType extends AbstractType
                     'autocomplete' => 'off'
                 ]
             ])
-            ->add('type', TextType::class, [
-                'attr' => [
-                    'autocomplete' => 'off'
-                ]
+            ->add('type', ChoiceType::class, [
+                'choices'  => [
+                    'Grabs' => 'grabs',
+                    'Rotations' => 'rotations',
+                    'Flips' => 'flips',
+                    'Slides' => 'slides',
+                    'One Foot' => 'onefoot',
+                    'Old School' => 'oldschool',
+                ],
+                'placeholder' => 'Choose a type',
+                'required' => true,
             ])
             ->add('imagePaths', FileType::class, [
                 'label' => 'Image (JPEG, PNG, GIF)',
