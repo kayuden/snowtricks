@@ -1,5 +1,5 @@
-import 'bootstrap'; //php bin/console importmap:require bootstrap
 import './bootstrap.js';
+import 'bootstrap'; //php bin/console importmap:require bootstrap
 import './js/scripts.js';
 import './js/homepage.js';
 /* AssetMapper
