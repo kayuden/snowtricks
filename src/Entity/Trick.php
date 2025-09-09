@@ -123,7 +123,7 @@ class Trick
         return $this->imagePaths;
     }
 
-    public function setImagePaths(?array $imagePaths): self
+    public function setImagePaths(array $imagePaths): self
     {
         $this->imagePaths = $imagePaths;
 
@@ -177,7 +177,7 @@ class Trick
         return $this->videoEmbeds;
     }
 
-    public function setVideoEmbeds(?array $videoEmbeds): static
+    public function setVideoEmbeds(array $videoEmbeds): static
     {
         $this->videoEmbeds = $videoEmbeds;
 
