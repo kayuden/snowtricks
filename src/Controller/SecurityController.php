@@ -41,7 +41,7 @@ class SecurityController extends AbstractController
     }
 
     // forgot password
-    #[Route('/forgot-password', name: 'app_forgot_password')]
+    #[Route('/forgot-password', name: 'app_forgot_password', methods: ['GET', 'POST'])]
     public function forgotPassword(Request $request, UserRepository $userRepository, TokenGeneratorInterface $tokenGenerator, MailerInterface $mailer, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ForgotPasswordType::class);
