@@ -1,0 +1,109 @@
+import * as bootstrap from 'bootstrap';
+
+document.addEventListener('turbo:load', function () {
+
+    // Scroll to top arrow
+    const scrollToTopButton = document.getElementById('scrollToTop');
+    window.addEventListener('scroll', function () {
+        if (window.scrollY > 100) {
+            scrollToTopButton.style.display = 'block';
+        } else {
+            scrollToTopButton.style.display = 'none';
+        }
+    });
+
+    // Load more button
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const trickList = document.getElementById('trick-list');
+
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function () {
+            const offset = parseInt(loadMoreBtn.getAttribute('data-offset'));
+
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...`;
+
+            const url = loadMoreBtn.dataset.url;
+            fetch(`${url}?offset=${offset}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // debug
+                    trickList.insertAdjacentHTML('beforeend', data.html);
+                    loadMoreBtn.setAttribute('data-offset', offset + 5);
+
+                    if (!data.hasMore) {
+                        loadMoreBtn.remove();
+                    } else {
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.innerText = "Load more";
+                    }
+                })
+                .catch(error => {
+                    console.error('Loading error:', error);
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.innerText = "Load more";
+                });
+        });
+    }
+
+    //init modal
+    let modal = null;
+    const modalElement = document.getElementById('trickModal');
+    if (modalElement) {
+        modal = new bootstrap.Modal(modalElement);
+    }
+
+    let editModal = null;
+    const editModalElement = document.getElementById('trickEditModal');
+    if (editModalElement) {
+        editModal = new bootstrap.Modal(editModalElement);
+    }
+
+    //listen link via event delegation
+    if (trickList) {
+        trickList.addEventListener('click', async (e) => {
+            const openModalLink = e.target.closest('.open-trick-modal');
+            const openEditLink = e.target.closest('.open-trick-edit-modal');
+
+            if (openModalLink && modal) {
+                e.preventDefault();
+                //trick id recover
+                const trickId = openModalLink.dataset.id;
+
+                try {
+                    //AJAX request
+                    const response = await fetch(`/trick/show/${trickId}`);
+                    if (!response.ok) throw new Error('Content loading error');
+                    const html = await response.text();
+
+                    //content injection in the modal
+                    document.getElementById('trickModalBody').innerHTML = html;
+
+                    //modal display
+                    modal.show();
+                } catch (error) {
+                    console.error('AJAX Error (show):', error);
+                }
+            }
+
+            if (openEditLink && editModal) {
+                e.preventDefault();
+                const trickId = openEditLink.dataset.id;
+
+                try {
+                    const response = await fetch(`/trick/edit/${trickId}`);
+                    if (!response.ok) throw new Error('Form loading error');
+                    const html = await response.text();
+
+                    //content injection in the modal
+                    document.getElementById('trickEditModalBody').innerHTML = html;
+
+                    //modal display
+                    editModal.show();
+                } catch (error) {
+                    console.error('AJAX Error (edit) :', error);
+                }
+            }
+        });
+    }
+});

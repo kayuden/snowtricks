@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <style>
+        label.required:before {
+            content: "* ";
+            color: red;
+        }
+    </style>
+
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('{{ asset('img/snowboard-bg.jpg') }}')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="site-heading">
+                        <h1>Registration</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <span class="text-muted"><small>*: required field</small></span>
+                {{ form_errors(registrationType) }}
+
+                {{ form_start(registrationType) }}
+                    {{ form_row(registrationType.firstname, {label: 'Firstname'}) }}
+                    {{ form_row(registrationType.lastname, {label: 'Name'}) }}
+                    {{ form_row(registrationType.username, {label: 'Username'}) }}
+                    {{ form_row(registrationType.email, {label: 'E-mail'}) }}
+                    {{ form_row(registrationType.plainPassword, {label: 'Password'}) }}
+                    {{ form_row(registrationType.agreeTerms) }}
+                    <button type="submit" class="btn btn-primary">Create an account</button>
+                    <span class="text-muted"><small><a class="nav-link" href="{{ path('app_login') }}">Already an account ?</a></small></span>
+                {{ form_end(registrationType) }}
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

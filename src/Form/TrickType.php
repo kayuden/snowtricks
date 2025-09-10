@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\Trick;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
+class TrickType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('name', TextType::class, [
+                'attr' => [
+                    'autocomplete' => 'off'
+                ]
+            ])
+            ->add('description', TextareaType::class, [
+                'attr' => [
+                    'autocomplete' => 'off',
+                    'rows' => 5,
+                ]
+            ])
+            ->add('type', ChoiceType::class, [
+                'choices'  => [
+                    'Grabs' => 'grabs',
+                    'Rotations' => 'rotations',
+                    'Flips' => 'flips',
+                    'Slides' => 'slides',
+                    'One Foot' => 'onefoot',
+                    'Old School' => 'oldschool',
+                ],
+                'placeholder' => 'Choose a type',
+                'required' => true,
+            ])
+            ->add('imagePaths', FileType::class, [
+                'label' => 'Image (JPEG, PNG, GIF)',
+                'mapped' => false, // not mapped directly to Trick entity
+                'multiple' => true, //multiple upload
+                'required' => false,
+            ])
+            ->add('videoEmbeds', CollectionType::class, [
+                'entry_type' => TextareaType::class,
+                'entry_options' => [
+                    'attr' => ['placeholder' => 'Paste your embed code here...','rows' => 3],
+                    'label' => false,
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'mapped' => true,
+                'required' => false,
+                'by_reference' => false,
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Trick::class,
+        ]);
+    }
+}

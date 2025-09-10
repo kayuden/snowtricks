@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trick{% endblock %}
+
+{% block body %}
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('{{ trick.mainImage ? asset('uploads/images/' ~ trick.mainImage) : asset('img/snowboard-bg.jpg') }}')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="site-heading">
+                        <h1>{{ trick.name }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container flex px-4 px-lg-5">
+        {# DESKTOP #}
+        <div class="d-none d-md-block">
+            <div class="media-gallery d-flex flex-wrap gap-3 justify-content-around">
+                {% for image in trick.imagePaths %}
+                    {% if image != trick.mainImage %}
+                        <div class="media-item">
+                            <img src="{{ asset('uploads/images/' ~ image) }}" 
+                                alt="{{ trick.name }}">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if trick.videoEmbeds is not empty %}
+                    {% for embed in trick.videoEmbeds %}
+                        <div class="media-item video">
+                            {{ embed|raw }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <!-- Back Button -->
+            <div class="container px-4 px-lg-5 my-3">
+                <a href="{{ path('app_homepage') }}#trick-list" class="btn btn-secondary text-uppercase">
+                    ← Back to list
+                </a>
+            </div>
+        </div>
+
+        {# MOBILE #}
+        <div class="d-md-none">
+            <button class="btn btn-outline-primary my-3"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#mediaCollapse"
+                    aria-expanded="false"
+                    aria-controls="mediaCollapse"
+                    id="toggleMediasBtn">
+                <span class="label">See medias</span>
+            </button>
+
+            <div id="mediaCollapse" class="collapse">
+                <div class="media-gallery d-flex flex-wrap gap-3 justify-content-around">
+                {% for image in trick.imagePaths %}
+                    {% if image != trick.mainImage %}
+                        <div class="media-item">
+                            <img src="{{ asset('uploads/images/' ~ image) }}" 
+                                alt="{{ trick.name }}">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if trick.videoEmbeds is not empty %}
+                    {% for embed in trick.videoEmbeds %}
+                        <div class="media-item video">
+                            {{ embed|raw }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+
+        
+                
+        <p>{{ trick.description }}</p>
+        
+        <div>
+            <span class="badge bg-primary">{{ trick.type }}</span>
+            <span class="badge bg-info">Created on {{ trick.createdAt|date('d/m/Y \\a\\t H\\hi') }}</span>
+            {% if trick.editedAt > trick.createdAt %}
+                <span class="badge bg-info">Modified on {{ trick.editedAt|date('d/m/Y \\a\\t H\\hi') }}</span>
+            {% endif %}
+        </div>
+        
+        <hr/>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <div id="comment-form" class="form-container">
+                {{ form_start(comment_form) }}
+                    <div class="d-flex gap-2 align-items-center flex-nowrap">
+                        {{ form_widget(comment_form.content, {'attr': {
+                            'class': 'form-control flex-grow-1',
+                            'placeholder': 'Write a comment...'
+                        }}) }}
+                    <button class="btn btn-primary" type="submit" style="white-space: nowrap;">Leave a comment</button>
+                    </div>
+                {{ form_end(comment_form) }}
+            </div>
+        {% else %}
+            <p><a href="{{ path('app_login') }}">Sign in</a> to post a comment.</p>
+        {% endif %}
+
+        <hr/>
+
+        <div class="comment-section">
+            {% for comment in trick.comments|reverse %}
+                <div class="comment mb-3 d-flex align-items-start">
+                    <img src="{{ asset('img/snowboard-bg.jpg') }}" alt="Profil" class="profile-pic me-2" style="width: 50px; height: 50px; border-radius: 50%;">
+                    <div class="comment-box">
+                        <div class="comment-author fw-bold">{{ comment.author.username }}</div>
+                        <div class="comment-date text-muted" style="font-size: 0.8em;">{{ comment.createdAt|date('d/m/Y H:i') }}</div>
+                        <div class="comment-text">{{ comment.content }}</div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted">No comment</p>
+            {% endfor %}
+        </div>
+        {#
+        <div class="d-flex justify-content-center mb-4"><a class="btn btn-primary text-uppercase" href="#">Load more</a></div>
+        #}
+    </div>
+{% endblock %}
