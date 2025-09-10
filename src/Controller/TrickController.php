@@ -265,10 +265,10 @@ final class TrickController extends AbstractController
 
 
     //trick deletion
-    #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Trick $trick, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.(int) $trick->getId(), $request->request->get('_token'))) {
             $filesystem = new Filesystem();
             $imageDir = $this->getParameter('images_directory'); //services.yaml
 
