@@ -39,6 +39,7 @@ when@test:
 
 when@prod:
     monolog:
+        channels: [deprecation]
         handlers:
             main:
                 type: fingers_crossed
@@ -50,14 +51,9 @@ when@prod:
                 type: stream
                 path: php://stderr
                 level: error
-                formatter: monolog.formatter.json
-            console:
-                type: console
-                process_psr_3_messages: false
-                channels: ["!event", "!doctrine"]
             deprecation:
                 type: stream
                 channels: [deprecation]
                 path: php://stderr
-                level: notice
+                level: warning
                 formatter: monolog.formatter.json
