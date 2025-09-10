@@ -234,8 +234,6 @@ final class TrickController extends AbstractController
 
             $trick->setEditedAt(new \DateTimeImmutable());
             $em->flush();
-
-            $this->addFlash('info', 'Image deleted');
         }
 
         return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
@@ -291,7 +289,7 @@ final class TrickController extends AbstractController
             $em->remove($trick);
             $em->flush();
 
-            $this->addFlash('info', 'The trick has been successfully removed.');
+            $this->addFlash('success', 'The trick has been successfully removed.');
         }
 
         return $this->redirectToRoute('app_homepage');

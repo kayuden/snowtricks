@@ -68,7 +68,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/verify/email', name: 'app_verify_email', methods: ['GET'])]
+    #[Route('/verify/email/{token}', name: 'app_verify_email', methods: ['GET'])]
     public function verifyEmail(string $token, EntityManagerInterface $em): Response
     {
         $user = $em->getRepository(User::class)->findOneBy(['verificationToken' => $token]);

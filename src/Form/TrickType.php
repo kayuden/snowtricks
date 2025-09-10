@@ -22,9 +22,10 @@ class TrickType extends AbstractType
                     'autocomplete' => 'off'
                 ]
             ])
-            ->add('description', TextType::class, [
+            ->add('description', TextareaType::class, [
                 'attr' => [
-                    'autocomplete' => 'off'
+                    'autocomplete' => 'off',
+                    'rows' => 5,
                 ]
             ])
             ->add('type', ChoiceType::class, [

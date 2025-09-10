@@ -76,7 +76,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/reset-password', name: 'app_reset_password', methods: ['GET', 'POST'])]
+    #[Route('/reset-password/{token}', name: 'app_reset_password', methods: ['GET', 'POST'])]
     public function resetPassword(string $token, Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): Response
     {
         $user = $userRepository->findOneBy(['resetToken' => $token]);
