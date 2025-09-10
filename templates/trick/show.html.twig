@@ -17,31 +17,68 @@
     </header>
 
     <div class="container flex px-4 px-lg-5">
-        <div class="media-gallery d-flex flex-wrap gap-3 justify-content-around">
-            {% for image in trick.imagePaths %}
-                {% if image != trick.mainImage %}
-                    <div class="media-item">
-                        <img src="{{ asset('uploads/images/' ~ image) }}" 
-                            alt="{{ trick.name }}">
-                    </div>
-                {% endif %}
-            {% endfor %}
-            
-            {% if trick.videoEmbeds is not empty %}
-                {% for embed in trick.videoEmbeds %}
-                    <div class="media-item video">
-                        {{ embed|raw }}
-                    </div>
+        {# DESKTOP #}
+        <div class="d-none d-md-block">
+            <div class="media-gallery d-flex flex-wrap gap-3 justify-content-around">
+                {% for image in trick.imagePaths %}
+                    {% if image != trick.mainImage %}
+                        <div class="media-item">
+                            <img src="{{ asset('uploads/images/' ~ image) }}" 
+                                alt="{{ trick.name }}">
+                        </div>
+                    {% endif %}
                 {% endfor %}
-            {% endif %}
+                {% if trick.videoEmbeds is not empty %}
+                    {% for embed in trick.videoEmbeds %}
+                        <div class="media-item video">
+                            {{ embed|raw }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <!-- Back Button -->
+            <div class="container px-4 px-lg-5 my-3">
+                <a href="{{ path('app_homepage') }}#trick-list" class="btn btn-secondary text-uppercase">
+                    ← Back to list
+                </a>
+            </div>
         </div>
 
-        <!-- Back Button -->
-        <div class="container px-4 px-lg-5 my-3">
-            <a href="{{ path('app_homepage') }}#trick-list" class="btn btn-secondary text-uppercase">
-                ← Back to list
-            </a>
+        {# MOBILE #}
+        <div class="d-md-none">
+            <button class="btn btn-outline-primary my-3"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#mediaCollapse"
+                    aria-expanded="false"
+                    aria-controls="mediaCollapse"
+                    id="toggleMediasBtn">
+                <span class="label">See medias</span>
+            </button>
+
+            <div id="mediaCollapse" class="collapse">
+                <div class="media-gallery d-flex flex-wrap gap-3 justify-content-around">
+                {% for image in trick.imagePaths %}
+                    {% if image != trick.mainImage %}
+                        <div class="media-item">
+                            <img src="{{ asset('uploads/images/' ~ image) }}" 
+                                alt="{{ trick.name }}">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if trick.videoEmbeds is not empty %}
+                    {% for embed in trick.videoEmbeds %}
+                        <div class="media-item video">
+                            {{ embed|raw }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
         </div>
+
+        
                 
         <p>{{ trick.description }}</p>
         
@@ -70,7 +107,7 @@
             <p><a href="{{ path('app_login') }}">Sign in</a> to post a comment.</p>
         {% endif %}
 
-        <br/>
+        <hr/>
 
         <div class="comment-section">
             {% for comment in trick.comments|reverse %}

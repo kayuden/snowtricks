@@ -164,3 +164,19 @@ header.masthead{
   height: 100%;
   object-fit: cover;
 }
+
+@media (max-width: 991.98px) {
+            body {
+                padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); /* espace pour la barre */
+            }
+            .mobile-bottom-nav {
+                padding-bottom: env(safe-area-inset-bottom, 0px); /* gère le notch iOS */
+            }
+            .mobile-bottom-nav .nav-link {
+                font-size: 0.8rem;
+                line-height: 1;
+            }
+            .mobile-bottom-nav i {
+                margin-bottom: 2px;
+            }
+        }
