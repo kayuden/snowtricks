@@ -3,10 +3,16 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        name: SNOWTRICKSSESSID_DEV
 
     #esi: true
     #fragments: true
+
+when@prod:
+    framework:
+        session:
+            name: SNOWTRICKSSESSID_PROD
 
 when@test:
     framework:
