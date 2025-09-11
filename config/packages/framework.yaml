@@ -3,13 +3,20 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        name: SNOWTRICKSSESSID_DEV
 
     #esi: true
     #fragments: true
+
+when@prod:
+    framework:
+        session:
+            name: SNOWTRICKSSESSID_PROD
 
 when@test:
     framework:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+            name: SNOWTRICKSSESSID
