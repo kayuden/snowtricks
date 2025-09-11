@@ -54,6 +54,11 @@ final class TrickController extends AbstractController
     #[Route('/new', name: 'app_trick_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $manager, SluggerInterface $slugger, TrickRepository $trickRepository): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You must be logged in to create a trick.');
+            return $this->redirectToRoute('app_homepage');
+        }
+
         $trick = new Trick();
 
         if (empty($trick->getVideoEmbeds())) {
@@ -135,7 +140,11 @@ final class TrickController extends AbstractController
     #[Route('/edit/{id}', name: 'app_trick_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request,Trick $trick,EntityManagerInterface $em,SluggerInterface $slugger
     ): Response {
-        
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You must be logged in to modify a trick.');
+            return $this->redirectToRoute('app_homepage');
+        }
+
         if (count($trick->getVideoEmbeds() ?? []) === 0) {
             $trick->setVideoEmbeds(['']);
         }
@@ -204,11 +213,7 @@ final class TrickController extends AbstractController
 
     //delete an image
     #[Route('/{id}/image/delete', name: 'app_trick_image_delete', methods: ['POST'])]
-    public function deleteImage(
-        Request $request,
-        Trick $trick,
-        EntityManagerInterface $em
-    ): Response {
+    public function deleteImage(Request $request, Trick $trick, EntityManagerInterface $em): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         if (!$this->isCsrfTokenValid('delete_image_'.$trick->getId(), $request->request->get('_token'))) {
@@ -268,6 +273,8 @@ final class TrickController extends AbstractController
     #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Trick $trick, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        
         if ($this->isCsrfTokenValid('delete'.(int) $trick->getId(), $request->request->get('_token'))) {
             $filesystem = new Filesystem();
             $imageDir = $this->getParameter('images_directory'); //services.yaml
