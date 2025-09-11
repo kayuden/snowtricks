@@ -31,6 +31,7 @@ final class TrickFactory extends PersistentProxyObjectFactory
      */
     protected function defaults(): array|callable
     {
+        /*
         return [
             'name' => self::faker()->word(),
             //'name' => self::$counter++,
@@ -42,6 +43,8 @@ final class TrickFactory extends PersistentProxyObjectFactory
             'mainImage' => 'monimage_1_20250509_151654.jpg',
             'videoEmbeds' => ['<iframe width="560" height="315" src="https://www.youtube.com/embed/ZqdFGAoHDzc?si=nIMpkwshIgfxzHBq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'],
         ];
+        */
+        return [];
     }
 
     /**

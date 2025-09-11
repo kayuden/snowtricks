@@ -31,7 +31,7 @@ class TrickType extends AbstractType
             ->add('type', ChoiceType::class, [
                 'choices'  => [
                     'Grabs' => 'grabs',
-                    'Rotations' => 'rotations',
+                    'Spins' => 'spins',
                     'Flips' => 'flips',
                     'Slides' => 'slides',
                     'One Foot' => 'onefoot',
