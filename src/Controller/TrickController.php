@@ -202,14 +202,14 @@ final class TrickController extends AbstractController
         $filename = $request->request->get('filename');
         if (!$filename || !in_array($filename, $trick->getImagePaths() ?? [], true)) {
             $this->addFlash('danger', 'Image not found');
-            return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+            return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
         }
 
         $trick->setMainImage($filename);
         $trick->setEditedAt(new \DateTimeImmutable());
         $em->flush();
 
-        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
     }
 
     //delete an image
@@ -242,7 +242,7 @@ final class TrickController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
     }
 
     //delete a video
@@ -266,7 +266,7 @@ final class TrickController extends AbstractController
             $this->addFlash('info', 'Vidéo deleted');
         }
 
-        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
     }
 
 
