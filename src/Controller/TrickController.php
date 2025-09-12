@@ -263,7 +263,7 @@ final class TrickController extends AbstractController
             $trick->setVideoEmbeds(array_values($videos));
             $trick->setEditedAt(new \DateTimeImmutable());
             $em->flush();
-            $this->addFlash('info', 'Vidéo deleted');
+            $this->addFlash('info', 'Video deleted');
         }
 
         return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
@@ -297,7 +297,7 @@ final class TrickController extends AbstractController
             $em->remove($trick);
             $em->flush();
 
-            $this->addFlash('success', 'The trick has been successfully removed.');
+            $this->addFlash('danger', 'The trick has been successfully removed.');
         }
 
         return $this->redirectToRoute('app_homepage');
