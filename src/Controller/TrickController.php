@@ -17,13 +17,14 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 
 #[Route('/trick')]
 final class TrickController extends AbstractController
 {
     //trick detail
-    #[Route('/show/{id}', name: 'app_trick_show', methods: ['GET', 'POST'])]
-    public function show(Trick $trick,Request $request,EntityManagerInterface $em): Response {
+    #[Route('/show/{slug}', name: 'app_trick_show', methods: ['GET', 'POST'])]
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Trick $trick,Request $request,EntityManagerInterface $em): Response {
         $commentForm = null;
 
         if ($this->getUser()) {
@@ -39,7 +40,7 @@ final class TrickController extends AbstractController
                 $em->persist($comment);
                 $em->flush();
 
-                return $this->redirectToRoute('app_trick_show', ['id' => $trick->getId()]);
+                return $this->redirectToRoute('app_trick_show', ['slug' => $trick->getSlug()]);
             }
         }
 
@@ -137,8 +138,8 @@ final class TrickController extends AbstractController
     }
 
     // trick modification
-    #[Route('/edit/{id}', name: 'app_trick_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request,Trick $trick,EntityManagerInterface $em,SluggerInterface $slugger
+    #[Route('/edit/{slug}', name: 'app_trick_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request,#[MapEntity(mapping: ['slug' => 'slug'])] Trick $trick,EntityManagerInterface $em,SluggerInterface $slugger
     ): Response {
         if (!$this->getUser()) {
             $this->addFlash('warning', 'You must be logged in to modify a trick.');
@@ -183,7 +184,7 @@ final class TrickController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'The trick has been successfully updated');
-            return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+            return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
         }
 
         return $this->render('trick/edit.html.twig', [

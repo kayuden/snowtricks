@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250620153422 extends AbstractMigration
+final class Version20250912081933 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,7 +20,9 @@ final class Version20250620153422 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-
+        $this->addSql(<<<'SQL'
+            CREATE UNIQUE INDEX UNIQ_D8F0A91E989D9B62 ON trick (slug)
+        SQL);
     }
 
     public function down(Schema $schema): void
@@ -28,6 +30,9 @@ final class Version20250620153422 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
             CREATE SCHEMA public
+        SQL);
+        $this->addSql(<<<'SQL'
+            DROP INDEX UNIQ_D8F0A91E989D9B62
         SQL);
     }
 }
