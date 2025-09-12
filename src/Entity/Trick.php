@@ -8,9 +8,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 #[UniqueEntity('name', message: 'This trick already exists.')]
+#[ORM\HasLifecycleCallbacks]
 class Trick
 {
     #[ORM\Id]
@@ -47,6 +50,9 @@ class Trick
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private ?array $videoEmbeds = null;
+
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $slug = null;
 
     public function __construct()
     {
@@ -182,5 +188,47 @@ class Trick
         $this->videoEmbeds = $videoEmbeds;
 
         return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function initSlug(): void
+    {
+        if (empty($this->slug) && $this->name) {
+            $this->slug = $this->slugify($this->name);
+        }
+    }
+
+    #[ORM\PreUpdate]
+    public function updateSlug(PreUpdateEventArgs $args): void
+    {
+        if ($args->hasChangedField('name')) {
+            $this->slug = $this->slugify($this->name);
+
+            /** @var EntityManagerInterface $em */
+            $em = $args->getObjectManager();
+            $uow = $em->getUnitOfWork();
+            $uow->recomputeSingleEntityChangeSet(
+                $em->getClassMetadata(self::class),
+                $this
+            );
+        }
+    }
+
+    private function slugify(string $text): string
+    {
+        $slug = strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $text), '-'));
+        return $slug;
     }
 }

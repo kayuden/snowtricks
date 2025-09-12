@@ -17,13 +17,14 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 
 #[Route('/trick')]
 final class TrickController extends AbstractController
 {
     //trick detail
-    #[Route('/show/{id}', name: 'app_trick_show', methods: ['GET', 'POST'])]
-    public function show(Trick $trick,Request $request,EntityManagerInterface $em): Response {
+    #[Route('/show/{slug}', name: 'app_trick_show', methods: ['GET', 'POST'])]
+    public function show(#[MapEntity(mapping: ['slug' => 'slug'])] Trick $trick,Request $request,EntityManagerInterface $em): Response {
         $commentForm = null;
 
         if ($this->getUser()) {
@@ -39,7 +40,7 @@ final class TrickController extends AbstractController
                 $em->persist($comment);
                 $em->flush();
 
-                return $this->redirectToRoute('app_trick_show', ['id' => $trick->getId()]);
+                return $this->redirectToRoute('app_trick_show', ['slug' => $trick->getSlug()]);
             }
         }
 
@@ -54,6 +55,11 @@ final class TrickController extends AbstractController
     #[Route('/new', name: 'app_trick_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $manager, SluggerInterface $slugger, TrickRepository $trickRepository): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You must be logged in to create a trick.');
+            return $this->redirectToRoute('app_homepage');
+        }
+
         $trick = new Trick();
 
         if (empty($trick->getVideoEmbeds())) {
@@ -132,10 +138,14 @@ final class TrickController extends AbstractController
     }
 
     // trick modification
-    #[Route('/edit/{id}', name: 'app_trick_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request,Trick $trick,EntityManagerInterface $em,SluggerInterface $slugger
+    #[Route('/edit/{slug}', name: 'app_trick_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request,#[MapEntity(mapping: ['slug' => 'slug'])] Trick $trick,EntityManagerInterface $em,SluggerInterface $slugger
     ): Response {
-        
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'You must be logged in to modify a trick.');
+            return $this->redirectToRoute('app_homepage');
+        }
+
         if (count($trick->getVideoEmbeds() ?? []) === 0) {
             $trick->setVideoEmbeds(['']);
         }
@@ -174,7 +184,7 @@ final class TrickController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'The trick has been successfully updated');
-            return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+            return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
         }
 
         return $this->render('trick/edit.html.twig', [
@@ -192,23 +202,19 @@ final class TrickController extends AbstractController
         $filename = $request->request->get('filename');
         if (!$filename || !in_array($filename, $trick->getImagePaths() ?? [], true)) {
             $this->addFlash('danger', 'Image not found');
-            return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+            return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
         }
 
         $trick->setMainImage($filename);
         $trick->setEditedAt(new \DateTimeImmutable());
         $em->flush();
 
-        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
     }
 
     //delete an image
     #[Route('/{id}/image/delete', name: 'app_trick_image_delete', methods: ['POST'])]
-    public function deleteImage(
-        Request $request,
-        Trick $trick,
-        EntityManagerInterface $em
-    ): Response {
+    public function deleteImage(Request $request, Trick $trick, EntityManagerInterface $em): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         if (!$this->isCsrfTokenValid('delete_image_'.$trick->getId(), $request->request->get('_token'))) {
@@ -236,7 +242,7 @@ final class TrickController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
     }
 
     //delete a video
@@ -257,10 +263,10 @@ final class TrickController extends AbstractController
             $trick->setVideoEmbeds(array_values($videos));
             $trick->setEditedAt(new \DateTimeImmutable());
             $em->flush();
-            $this->addFlash('info', 'Vidéo deleted');
+            $this->addFlash('info', 'Video deleted');
         }
 
-        return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
+        return $this->redirectToRoute('app_trick_edit', ['slug' => $trick->getSlug()]);
     }
 
 
@@ -268,6 +274,8 @@ final class TrickController extends AbstractController
     #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Trick $trick, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        
         if ($this->isCsrfTokenValid('delete'.(int) $trick->getId(), $request->request->get('_token'))) {
             $filesystem = new Filesystem();
             $imageDir = $this->getParameter('images_directory'); //services.yaml
@@ -289,7 +297,7 @@ final class TrickController extends AbstractController
             $em->remove($trick);
             $em->flush();
 
-            $this->addFlash('success', 'The trick has been successfully removed.');
+            $this->addFlash('danger', 'The trick has been successfully removed.');
         }
 
         return $this->redirectToRoute('app_homepage');
